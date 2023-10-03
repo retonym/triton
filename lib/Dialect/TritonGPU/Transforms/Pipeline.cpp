@@ -431,6 +431,7 @@ LogicalResult LoopPipeliner::checkOpUses(SetVector<Operation *> &ops) {
             }
         } else if (preUse && isa<tt::DotOp>(use)) {
           isCandidate = false;
+          if (use->getOperand(1) == preUse->getResult(0)) {
           // for MMAv3 whose dot take SharedEncoding as operands directly
           Operation *post = *loadOp.getResult().getUsers().begin();
           auto newOrder = post->getResult(0)
@@ -450,6 +451,7 @@ LogicalResult LoopPipeliner::checkOpUses(SetVector<Operation *> &ops) {
           if (newOrder[0] == oldOrder[0] || newOrder[1] == oldOrder[1]) {
             isCandidate = true;
             loadsMapping[loadOp] = preUse->getResult(0);
+          }
           }
         }
       } else if (isCandidate && mode && isLoadFromTensorPtr(loadOp)) {
