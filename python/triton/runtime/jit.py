@@ -622,6 +622,9 @@ class JITFunction(KernelInterface[T]):
         kernel = self.cache[device].get(key, None)
 
         if kernel is None:
+            print("Kernel is not cached; we have to compile.")
+            print("self.name", self.__name__)
+            print("key", key)
             # Kernel is not cached; we have to compile.
             target = driver.active.get_current_target()
             backend = self.make_backend(target)
